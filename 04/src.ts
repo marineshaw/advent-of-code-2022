@@ -47,11 +47,28 @@ const countUselessPairs = (elfPairsList: ElfPair[]): number => {
   return total;
 };
 
+const countLessUselessPairs = (elfPairsList: ElfPair[]): number => {
+  let total = 0;
+  elfPairsList.forEach((elfPair) => {
+    const firstElf = elfPair[0];
+    const secondElf = elfPair[1];
+    if (
+      firstElf.beginningSection <= secondElf.endingSection &&
+      firstElf.endingSection >= secondElf.beginningSection
+    ) {
+      total += 1;
+    }
+  });
+  return total;
+};
+
 async function main() {
   const lines = await getLinesOfFile("04/input.txt");
   const elfPairs = createElfPairsList(lines);
   const uselessPairsCount = countUselessPairs(elfPairs);
   console.log("useless", uselessPairsCount);
+  const lessUselessPairsCount = countLessUselessPairs(elfPairs);
+  console.log("less useless", lessUselessPairsCount);
 }
 
 main();
