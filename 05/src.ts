@@ -68,6 +68,27 @@ const performMovements = ({
   return finalShip;
 };
 
+const performMovementsWithCrateMover9001 = ({
+  ship,
+  movementsList,
+}: {
+  ship: Ship;
+  movementsList: Movement[];
+}): Ship => {
+  const finalShip = ship;
+  movementsList.forEach((movement) => {
+    const startingStack = finalShip[movement.startingStackIndex - 1];
+    const stacksToMove = startingStack.slice(0, movement.numberOfCrates);
+    finalShip[movement.startingStackIndex - 1] = startingStack.slice(
+      movement.numberOfCrates
+    );
+    finalShip[movement.endingStackIndex - 1] = stacksToMove.concat(
+      finalShip[movement.endingStackIndex - 1]
+    );
+  });
+  return finalShip;
+};
+
 async function main() {
   const lines = await getLinesOfFile("05/input.txt");
   const { ship, movementsList } = createShipAndMovementList(lines);
@@ -79,6 +100,14 @@ async function main() {
   });
   const topAfterMovements = getTopStack(shipAfterMovements);
   console.log({ topAfterMovements });
+  const { ship: newShip, movementsList: newMovementsList } =
+    createShipAndMovementList(lines);
+  const shipAfterMovementsWith9001 = performMovementsWithCrateMover9001({
+    ship: newShip,
+    movementsList: newMovementsList,
+  });
+  const topAfterMovementsWith9001 = getTopStack(shipAfterMovementsWith9001);
+  console.log({ topAfterMovementsWith9001 });
 }
 
 main();
